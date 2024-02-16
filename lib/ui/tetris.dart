@@ -196,194 +196,196 @@ class _TetrisState extends State<Tetris> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xff171648), Color(0xff301585)])
-      ),
-      child: Column(
-        children: [
-          Container(
-            height: height * .14,
-            color: Color(0xff171648),
-            child: Center(
-              child: Text('Score:${currentScore}',style: TextStyle(color: Colors.white,fontSize: 14),),
+    return Material(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xff171648), Color(0xff301585)])
+        ),
+        child: Column(
+          children: [
+            Container(
+              height: height * .14,
+              color: Color(0xff171648),
+              child: Center(
+                child: Text('Score:${currentScore}',style: TextStyle(color: Colors.white,fontSize: 14),),
+              ),
             ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: (){
-                rotatePiece();
-              },
-              onVerticalDragUpdate: (details) {
-                if (details.delta.dy > 0) {
-                  moveDown();
-                }
-              },
-              onHorizontalDragUpdate: (details) {
-                if (details.delta.dx > 0) {
-                  moveRight();
-                }
-                else {
-                  moveLeft();
-                }
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5)
+            Expanded(
+              child: GestureDetector(
+                onTap: (){
+                  rotatePiece();
+                },
+                onVerticalDragUpdate: (details) {
+                  if (details.delta.dy > 0) {
+                    moveDown();
+                  }
+                },
+                onHorizontalDragUpdate: (details) {
+                  if (details.delta.dx > 0) {
+                    moveRight();
+                  }
+                  else {
+                    moveLeft();
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(5)
+                    ),
+                    border: GradientBoxBorder(
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xfff4f5ff), Color(0xff7158f3)]),
+                      width: 4,
+                    ),
                   ),
-                  border: GradientBoxBorder(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xfff4f5ff), Color(0xff7158f3)]),
-                    width: 4,
-                  ),
-                ),
-                margin: EdgeInsets.all(.5),
-                child: Center(
-                  child: GridView.builder(
-                      padding: EdgeInsets.all(0),
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: rowLength * columnLength,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: rowLength),
-                      itemBuilder: (context, index) {
-                        int row = (index / rowLength).floor();
-                        int col = index % rowLength;
+                  margin: EdgeInsets.all(.5),
+                  child: Center(
+                    child: GridView.builder(
+                        padding: EdgeInsets.all(0),
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: rowLength * columnLength,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: rowLength),
+                        itemBuilder: (context, index) {
+                          int row = (index / rowLength).floor();
+                          int col = index % rowLength;
 
-                        if (currentPiece.positions.contains(index)) {
-                          return Pixel(
-                            color: tetrominoColors[currentPiece.type]!,
-                            child: Container(),
-                          );
-                        } else if (gameBoard[row][col] != null) {
-                          final Tetromino? tetroType = gameBoard[row][col];
-                          return Pixel(
-                            color: tetrominoColors[tetroType]!,
-                            child: Container(),
-                          );
-                        } else {
-                          return Pixel(
-                            color: Colors.transparent,
-                            child: Container(),
-                          );
-                        }
-                      }),
+                          if (currentPiece.positions.contains(index)) {
+                            return Pixel(
+                              color: tetrominoColors[currentPiece.type]!,
+                              child: Container(),
+                            );
+                          } else if (gameBoard[row][col] != null) {
+                            final Tetromino? tetroType = gameBoard[row][col];
+                            return Pixel(
+                              color: tetrominoColors[tetroType]!,
+                              child: Container(),
+                            );
+                          } else {
+                            return Pixel(
+                              color: Colors.transparent,
+                              child: Container(),
+                            );
+                          }
+                        }),
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            height: height * .12,
-            width: width,
-            color: Color(0xff301585),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onLongPressStart: (_) async {
-                      isPressed = true;
-                      do {
+            Container(
+              height: height * .12,
+              width: width,
+              color: Color(0xff301585),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onLongPressStart: (_) async {
+                        isPressed = true;
+                        do {
+                          moveLeft();
+                          await Future.delayed(Duration(milliseconds: 100));
+                        } while (isPressed);
+                      },
+                      onLongPressEnd: (_) => setState(() => isPressed = false),
+                      onTap: () {
                         moveLeft();
-                        await Future.delayed(Duration(milliseconds: 100));
-                      } while (isPressed);
-                    },
-                    onLongPressEnd: (_) => setState(() => isPressed = false),
-                    onTap: () {
-                      moveLeft();
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(20),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Color(0xff7158f3),
-                      ),
-                      height: height * .1,
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.chevron_left_outlined,color: Colors.white,),
-                            Text('Move Left',style: TextStyle(color: Colors.white,fontSize: 10),),
-                          ],
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Color(0xff7158f3),
+                        ),
+                        height: height * .1,
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.chevron_left_outlined,color: Colors.white,),
+                              Text('Move Left',style: TextStyle(color: Colors.white,fontSize: 10),),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: () {
-                      rotatePiece();
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Color(0xff7158f3),
-                      ),
-                      height: height * .1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.rotate_left_rounded,color: Colors.white,),
-                            Text('Rotate',style: TextStyle(color: Colors.white,fontSize: 10),),
-                          ],
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        rotatePiece();
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Color(0xff7158f3),
+                        ),
+                        height: height * .1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.rotate_left_rounded,color: Colors.white,),
+                              Text('Rotate',style: TextStyle(color: Colors.white,fontSize: 10),),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onLongPressStart: (_) async {
-                      isPressed = true;
-                      do {
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onLongPressStart: (_) async {
+                        isPressed = true;
+                        do {
+                          moveRight();
+                          await Future.delayed(Duration(milliseconds: 100));
+                        } while (isPressed);
+                      },
+                      onLongPressEnd: (_) => setState(() => isPressed = false),
+                      onTap: () {
                         moveRight();
-                        await Future.delayed(Duration(milliseconds: 100));
-                      } while (isPressed);
-                    },
-                    onLongPressEnd: (_) => setState(() => isPressed = false),
-                    onTap: () {
-                      moveRight();
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Color(0xff7158f3),
-                      ),
-                      height: height * .1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.chevron_right_outlined,color: Colors.white,),
-                            Text('Move Right',style: TextStyle(color: Colors.white,fontSize: 10),),
-                          ],
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Color(0xff7158f3),
+                        ),
+                        height: height * .1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.chevron_right_outlined,color: Colors.white,),
+                              Text('Move Right',style: TextStyle(color: Colors.white,fontSize: 10),),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
