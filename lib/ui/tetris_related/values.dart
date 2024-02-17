@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // int columnLength = 15;
 
 int rowLength = 10;
-int columnLength = 16;
+int columnLength = 17;
 
 int gameSpeed = 400;
 
