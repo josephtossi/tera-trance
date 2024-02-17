@@ -300,7 +300,7 @@ class _TetrisState extends State<Tetris> {
                       width: 4,
                     ),
                   ),
-                  margin: const EdgeInsets.all(25),
+                  margin: EdgeInsets.all(width * .1),
                   child: Center(
                     child: GridView.builder(
                         padding: const EdgeInsets.all(0),
